@@ -1,7 +1,9 @@
-# nrf_cell_mon
+# Monitor for Lithium battery cells
 
-Battery cell monitor for the Nordic Semiconductor [nRF52840](https://www.nordicsemi.com/Products/Low-power-short-range-wireless/nRF52840)/[nRF52833](https://www.nordicsemi.com/Products/Low-power-short-range-wireless/nRF52833) with MQTT-SN over OpenThread.
-Three values are sampled and publised on MQTT:
+This battery cell monitor uses the Nordic Semiconductor [nRF52840](https://www.nordicsemi.com/Products/Low-power-short-range-wireless/nRF52840)/[nRF52833](https://www.nordicsemi.com/Products/Low-power-short-range-wireless/nRF52833) with MQTT-SN over OpenThread.
+It is meant to be used for monitoring a Lithium battery cell connected between the VDDH pin and ground on the nRF chip.
+
+Three values are sampled and published on MQTT:
 
 1. The voltage on the VDDH pin of the nRF chip
 2. The internal temperature of the nRF chip
@@ -9,7 +11,7 @@ Three values are sampled and publised on MQTT:
 
 # MQTT-SN
 
-To identify the cell monitor the device ID is used as part of the MQTT topic. Three topics are publised; the battery/cell voltage in mV ("mv"),
+To identify the cell monitor the device ID is used as part of the MQTT topic. Three topics are published; the battery/cell voltage in mV ("mv"),
 the battery/cell temperature in degrees Celsius ("tb") and the self/device temperature in degrees Celsius ("ts"). If the device ID is
 "E19928773B8398AF", the three topics looks like this:
 
