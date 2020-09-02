@@ -58,6 +58,8 @@
       <file file_name="../../../src/tmp102.c" />
       <file file_name="../../../src/temperature.c" />
       <file file_name="../../../src/led_utils.c" />
+      <file file_name="../../../src/uicr.c" />
+      <file file_name="../../../src/vdd_out.h" />
     </folder>
     <folder Name="nRF_Libraries">
       <file file_name="../../../../../../components/libraries/util/app_error.c" />
