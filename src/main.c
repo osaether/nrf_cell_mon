@@ -500,12 +500,9 @@ static void wdt_init(void)
 #if defined (BOARD_PCA10059)
 static void gpio_output_voltage_setup(void)
 {
-    static uint32_t reg0;
-
     if (NRF_POWER->MAINREGSTATUS &
        (POWER_MAINREGSTATUS_MAINREGSTATUS_High << POWER_MAINREGSTATUS_MAINREGSTATUS_Pos))
     {
-        uint32_t tmp = NRF_UICR->REGOUT0;
         if ((NRF_UICR->REGOUT0 & UICR_REGOUT0_VOUT_Msk) != (UICR_REGOUT0_VDD_OUT << UICR_REGOUT0_VOUT_Pos))
         {
             uint32_t nrffw[2];
@@ -565,7 +562,7 @@ int main(int argc, char *argv[])
     wdt_init();
     thread_instance_init();
     thread_bsp_init();
-    mqttsn_init(NULL, 0); 
+    mqttsn_init(NULL, 0);
 
     while(true)
     {
@@ -578,4 +575,3 @@ int main(int argc, char *argv[])
         }
     }
 }
-
