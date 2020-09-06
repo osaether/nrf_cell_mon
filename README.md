@@ -7,17 +7,19 @@ Three values are sampled and published on MQTT:
 
 1. The voltage on the VDDH pin of the nRF chip
 2. The internal temperature of the nRF chip
-3. An external [TMP102](https://www.sparkfun.com/products/13314) temperature sensor mounted on the battery cell
+3. An external (optional) [TMP102](https://www.sparkfun.com/products/13314) temperature sensor mounted on the battery cell
 
 # MQTT-SN
 
-To identify the cell monitor the device ID is used as part of the MQTT topic. Three topics are published; the battery/cell voltage in mV ("mv"),
-the battery/cell temperature in degrees Celsius ("tb") and the self/device temperature in degrees Celsius ("ts"). If the device ID is
-"E19928773B8398AF", the three topics looks like this:
+To identify the cell monitor the device ID is used as part of the MQTT topic. One JSON topic is published containing the device ID ("id"), the battery/cell voltage in mV ("mv"), the battery/cell temperature in degrees Celsius ("tb") and the self/device temperature in degrees Celsius ("ts"). If the device ID is
+"E19928773B8398AF", the battery voltage 3779mV, the battery temperature 22&deg;C and the internal temperature 25&deg;C, the published topic looks like this:
 
-    nrfcellmon/E19928773B8398AF/mv
-    nrfcellmon/E19928773B8398AF/tb
-    nrfcellmon/E19928773B8398AF/ts
+{
+  "id" : "E19928773B8398AF",
+  "mv" : 3779,
+  "tb" : 22,
+  "ts" : 25
+}
 
 The cell monitor subscribes to the following topics
 

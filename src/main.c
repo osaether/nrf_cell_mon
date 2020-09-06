@@ -53,12 +53,16 @@
 #include <thread_utils.h>
 #include <openthread/thread.h>
 
+#define EXTERNAL_TEMP_SENSOR
+
 #include "temperature.h"
-#include "tmp102.h"
 #include "voltage.h"
 #include "identify.h"
 #include "vdd_out.h"
 
+#if defined(EXTERNAL_TEMP_SENSOR)
+#include "tmp102.h"
+#endif
 
 #define SCHED_QUEUE_SIZE        32                                        // Maximum number of events in the scheduler queue
 #define SCHED_EVENT_DATA_SIZE   APP_TIMER_SCHED_EVENT_DATA_SIZE           // Maximum app_scheduler event size
@@ -66,22 +70,18 @@
 #define DEFAULT_POLL_PERIOD     1000                                      // Thread Sleepy End Device polling period when MQTT-SN Asleep [ms]
 #define SHORT_POLL_PERIOD       100                                       // Thread Sleepy End Device polling period when MQTT-SN Awake [ms]
 #define SEARCH_GATEWAY_TIMEOUT  5                                         // MQTT-SN Gateway discovery procedure timeout [s]
-#define PUBLISH_INTERVAL        3000
+#define PUBLISH_INTERVAL        4000
 #define TOPIC_LEN               MQTTSN_CLIENT_ID_MAX_LENGTH+16
 
 const char                      *m_pname = "nrfcellmon";
 
+
 static mqttsn_topic_t m_pub_topics[] =
 {
-    {(uint8_t *)"mv", 0},
-    {( uint8_t *)"ts", 0},
-    {( uint8_t *)"tb", 0},
+    {(uint8_t *)"celldata", 0}
 };
 
-#define PUB_TOPIC_MV      0
-#define PUB_TOPIC_TS      1
-#define PUB_TOPIC_TB      2
-
+#define PUB_TOPIC_DATA  0
 
 static mqttsn_topic_t m_sub_topics[] =
 {
@@ -152,7 +152,7 @@ static void gateway_info_callback(mqttsn_event_t * p_event)
 
 static void disconnected_callback(void)
 {
-     bsp_board_led_off(2);
+    bsp_board_led_off(2);
     app_timer_stop(m_publish_timer);
     app_sched_event_put(NULL, 0, mqttsn_connect);
 }
@@ -228,7 +228,7 @@ static void mqtt_register(void * p_event_data, uint16_t event_size)
     
     for(i=0;i<sizeof(m_pub_topics)/sizeof(mqttsn_topic_t);i++)
     {
-        snprintf(m_topic_name, TOPIC_LEN, "%s/%s/%s", m_pname, m_client_id, m_pub_topics[i].p_topic_name);
+        snprintf(m_topic_name, TOPIC_LEN, "%s/%s", m_pname, m_pub_topics[i].p_topic_name);
         m_mqtt_registered = false;
         err_code = mqttsn_client_topic_register(&m_client, (uint8_t *)m_topic_name, strlen(m_topic_name), &m_msg_id);
         if (err_code != NRF_SUCCESS)
@@ -378,24 +378,19 @@ static void publish(void * p_event_data, uint16_t event_size)
 {
     uint32_t err_code;
 
-    err_code = mqttsn_client_publish(&m_client, m_pub_topics[PUB_TOPIC_TB].topic_id, (const uint8_t *)&m_battery_temp, 1, &m_msg_id);
+
+    char buf[64];
+
+#if defined(EXTERNAL_TEMP_SENSOR)
+    snprintf(buf, 64, "{\"id\":\"%s\",\"mv\":%lu,\"tb\":%d,\"ts\":%d}", m_client_id, m_mvoltage, m_battery_temp, m_internal_temp);
+#else
+    snprintf(buf, 64, "{\"id\":\"%s\",\"mv\":%lu,\"ts\":%d}", m_client_id, m_mvoltage, m_internal_temp);
+#endif
+    err_code = mqttsn_client_publish(&m_client, m_pub_topics[PUB_TOPIC_DATA].topic_id, buf, strlen(buf), &m_msg_id);
     if (err_code != NRF_SUCCESS)
     {
         NRF_LOG_ERROR("PUBLISH message could not be sent. Error code: 0x%x\r\n", err_code)
     }
-    err_code = mqttsn_client_publish(&m_client, m_pub_topics[PUB_TOPIC_TS].topic_id, (const uint8_t *)&m_internal_temp, 1, &m_msg_id);
-    if (err_code != NRF_SUCCESS)
-    {
-        NRF_LOG_ERROR("PUBLISH message could not be sent. Error code: 0x%x\r\n", err_code)
-    }
-    err_code = mqttsn_client_publish(&m_client, m_pub_topics[PUB_TOPIC_MV].topic_id, (const uint8_t *)&m_mvoltage, 4, &m_msg_id);
-    if (err_code != NRF_SUCCESS)
-    {
-        NRF_LOG_ERROR("PUBLISH message could not be sent. Error code: 0x%x\r\n", err_code)
-    }
-    uint32_t mvround = (m_mvoltage+25)/50;
-    mvround = mvround * 50;
-    NRF_LOG_INFO("m_mvoltage=%d, mvround=%d, m_mvmin=%d, m_mvmax=%d", m_mvoltage, mvround, m_mvmin, m_mvmax);
 }
 
 static void sample(void * p_event_data, uint16_t event_size)
@@ -406,7 +401,9 @@ static void sample(void * p_event_data, uint16_t event_size)
     if (m_mvoltage > m_mvmax)
         m_mvmax = m_mvoltage;
     m_internal_temp = temp_internal_read();
+#if defined(EXTERNAL_TEMP_SENSOR)
     m_battery_temp = tmp102_read();
+#endif
     app_sched_event_put(NULL, 0, publish);
 }
 
@@ -486,6 +483,7 @@ static void thread_instance_init(void)
 
 void wdt_event_handler(void)
 {
+    bsp_board_leds_off();
 }
 
 
@@ -559,7 +557,9 @@ int main(int argc, char *argv[])
     scheduler_init();
     timer_init();
     temp_init();
+#if defined(EXTERNAL_TEMP_SENSOR)
     tmp102_init();
+#endif
     leds_init();
     wdt_init();
     thread_instance_init();
