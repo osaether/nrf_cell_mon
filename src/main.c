@@ -48,7 +48,7 @@
 #include <nrf_log.h>
 #include <nrf_log_ctrl.h>
 #include <nrf_log_default_backends.h>
-#include <nrf_drv_wdt.h>
+#include <nrfx_wdt.h>
 #include <mqttsn_client.h>
 #include <thread_utils.h>
 #include <openthread/thread.h>
@@ -108,7 +108,8 @@ static uint16_t               m_msg_id           = 0;                     // Mes
 static char                   m_client_id[MQTTSN_CLIENT_ID_MAX_LENGTH];   // The MQTT-SN Client's ID
 static char                   m_topic_name[TOPIC_LEN];
 static uint16_t               m_topic_id;
-static nrf_drv_wdt_channel_id m_channel_id;
+static nrfx_wdt_channel_id    m_channel_id;
+
 
 static void mqttsn_init(void * p_event_data, uint16_t event_size);
 
@@ -171,6 +172,7 @@ static void regack_callback(mqttsn_event_t * p_event)
 
 static void puback_callback(void)
 {
+    nrfx_wdt_channel_feed(m_channel_id);
     sleep();
 }
 
@@ -489,12 +491,12 @@ void wdt_event_handler(void)
 
 static void wdt_init(void)
 {
-    nrf_drv_wdt_config_t config = NRF_DRV_WDT_DEAFULT_CONFIG;
-    uint32_t err_code = nrf_drv_wdt_init(&config, wdt_event_handler);
+    nrfx_wdt_config_t config = NRFX_WDT_DEAFULT_CONFIG;
+    uint32_t err_code = nrfx_wdt_init(&config, wdt_event_handler);
     APP_ERROR_CHECK(err_code);
-    err_code = nrf_drv_wdt_channel_alloc(&m_channel_id);
+    err_code = nrfx_wdt_channel_alloc(&m_channel_id);
     APP_ERROR_CHECK(err_code);
-    nrf_drv_wdt_enable();
+    nrfx_wdt_enable();
 }
 
 #if defined (BOARD_PCA10059)
@@ -566,7 +568,6 @@ int main(int argc, char *argv[])
 
     while(true)
     {
-        nrf_drv_wdt_channel_feed(m_channel_id);
         thread_process();
         app_sched_execute();
         if (NRF_LOG_PROCESS() == false)
@@ -575,3 +576,4 @@ int main(int argc, char *argv[])
         }
     }
 }
+
