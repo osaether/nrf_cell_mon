@@ -11,8 +11,7 @@ Three values are sampled and published on MQTT:
 
 # MQTT-SN
 
-To identify the cell monitor the device ID is used as part of the MQTT topic. One JSON topic is published containing the device ID ("id"), the battery/cell voltage in mV ("mv"), the battery/cell temperature in degrees Celsius ("tb") and the self/device temperature in degrees Celsius ("ts"). If the device ID is
-"E19928773B8398AF", the battery voltage 3779mV, the battery temperature 22&deg;C and the internal temperature 25&deg;C, the published topic looks like this:
+To identify each battery cell, the device ID is included in the published data. For now the topic to subscribe is "nrfcellmon/celldata". One JSON topic is published containing the device ID ("id"), the battery/cell voltage in mV ("mv"), the battery/cell temperature in degrees Celsius ("tb") and the self/device temperature in degrees Celsius ("ts"). If the device ID is "E19928773B8398AF", the battery voltage 3779mV, the battery temperature 22&deg;C and the internal temperature 25&deg;C, the topic published data looks like this:
 
 {
   "id" : "E19928773B8398AF",
@@ -21,9 +20,18 @@ To identify the cell monitor the device ID is used as part of the MQTT topic. On
   "ts" : 25
 }
 
-The cell monitor subscribes to the following topics
+Commands over MQTT
 
-1.  identify  
+Commands can be sent to each cell moditor using the topic "nrfcellmon/device ID/command"
+
+1.  identify
+
     This is used for device identification. When received the four LEDs of the development board are blinked in order.
-2.  reset  
+
+    example "nrfcellmon/E19928773B8398AF/identify"
+
+2.  reset
+
     Resets the device by calling NVIC_SystemReset
+
+    example "nrfcellmon/E19928773B8398AF/reset"
