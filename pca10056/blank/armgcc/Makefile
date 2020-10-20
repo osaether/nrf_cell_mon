@@ -56,6 +56,7 @@ SRC_FILES += \
   $(SDK_ROOT)/modules/nrfx/soc/nrfx_atomic.c \
   $(SDK_ROOT)/modules/nrfx/drivers/src/nrfx_clock.c \
   $(SDK_ROOT)/modules/nrfx/drivers/src/nrfx_gpiote.c \
+  $(SDK_ROOT)/modules/nrfx/drivers/src/nrfx_nvmc.c \
   $(SDK_ROOT)/modules/nrfx/drivers/src/nrfx_rng.c \
   $(SDK_ROOT)/modules/nrfx/drivers/src/nrfx_saadc.c \
   $(SDK_ROOT)/modules/nrfx/drivers/src/nrfx_twi.c \
@@ -97,13 +98,13 @@ INC_FOLDERS += \
   $(SDK_ROOT)/components/libraries/queue \
   $(SDK_ROOT)/components/libraries/pwr_mgmt \
   $(SDK_ROOT)/external/nRF-IEEE-802.15.4-radio-driver/src/fem/three_pin_gpio \
-  $(SDK_ROOT)/external/openthread/nrf_security/include \
+  $(SDK_ROOT)/external/nrf_security/include \
   $(SDK_ROOT)/components/boards \
   $(SDK_ROOT)/components/libraries/strerror \
   $(SDK_ROOT)/components/toolchain/cmsis/include \
   $(SDK_ROOT)/components/libraries/timer \
   $(SDK_ROOT)/components/libraries/util \
-  $(SDK_ROOT)/external/openthread/nrf_security/config \
+  $(SDK_ROOT)/external/nrf_security/config \
   $(SDK_ROOT)/external/openthread/include \
   ../config \
   $(SDK_ROOT)/components/libraries/balloc \
@@ -113,7 +114,7 @@ INC_FOLDERS += \
   $(SDK_ROOT)/components/libraries/bsp \
   $(SDK_ROOT)/components/libraries/log \
   $(SDK_ROOT)/components/libraries/button \
-  $(SDK_ROOT)/external/openthread/nrf_security/mbedtls_plat_config \
+  $(SDK_ROOT)/external/nrf_security/mbedtls_plat_config \
   $(SDK_ROOT)/modules/nrfx \
   $(SDK_ROOT)/components/libraries/experimental_section_vars \
   $(SDK_ROOT)/integration/nrfx/legacy \
@@ -128,7 +129,7 @@ INC_FOLDERS += \
   $(SDK_ROOT)/components/libraries/memobj \
   $(SDK_ROOT)/components/thread/mqtt_sn/mqtt_sn_client \
   $(SDK_ROOT)/integration/nrfx \
-  $(SDK_ROOT)/external/openthread/nrf_security/nrf_cc310_plat/include \
+  $(SDK_ROOT)/external/nrf_security/nrf_cc310_plat/include \
   $(SDK_ROOT)/external/openthread/project/nrf52840 \
   $(SDK_ROOT)/modules/nrfx/drivers/include \
   $(SDK_ROOT)/components/thread/utils \
@@ -140,28 +141,30 @@ INC_FOLDERS += \
 LIB_FILES += \
   $(SDK_ROOT)/external/openthread/lib/nrf52840/gcc/libopenthread-cli-mtd.a \
   $(SDK_ROOT)/external/openthread/lib/nrf52840/gcc/libopenthread-mtd.a \
+  $(SDK_ROOT)/external/openthread/lib/nrf52840/gcc/libopenthread-nrf52840-transport.a \
   $(SDK_ROOT)/external/openthread/lib/nrf52840/gcc/libopenthread-platform-utils.a \
-  $(SDK_ROOT)/external/openthread/nrf_security/lib/libmbedcrypto_glue.a \
-  $(SDK_ROOT)/external/openthread/nrf_security/lib/libmbedcrypto_glue_cc310.a \
-  $(SDK_ROOT)/external/openthread/nrf_security/lib/libmbedcrypto_glue_vanilla.a \
-  $(SDK_ROOT)/external/openthread/nrf_security/lib/libmbedcrypto_cc310_backend.a \
-  $(SDK_ROOT)/external/openthread/nrf_security/lib/libmbedcrypto_vanilla_backend.a \
-  $(SDK_ROOT)/external/openthread/nrf_security/lib/libmbedtls_base_vanilla.a \
-  $(SDK_ROOT)/external/openthread/nrf_security/lib/libmbedtls_tls_vanilla.a \
-  $(SDK_ROOT)/external/openthread/nrf_security/lib/libmbedtls_x509_vanilla.a \
-  $(SDK_ROOT)/external/openthread/nrf_security/lib/libnrf_cc310_platform_0.9.1.a \
+  $(SDK_ROOT)/external/nrf_security/lib/libmbedcrypto_glue.a \
+  $(SDK_ROOT)/external/nrf_security/lib/libmbedcrypto_glue_cc310.a \
+  $(SDK_ROOT)/external/nrf_security/lib/libmbedcrypto_glue_vanilla.a \
+  $(SDK_ROOT)/external/nrf_security/lib/libmbedcrypto_vanilla_backend.a \
+  $(SDK_ROOT)/external/nrf_security/lib/libmbedtls_tls_vanilla.a \
+  $(SDK_ROOT)/external/nrf_security/lib/libmbedtls_x509_vanilla.a \
+  $(SDK_ROOT)/external/nrf_security/lib/libnrf_cc310_platform_0.9.2.a \
   $(SDK_ROOT)/external/openthread/lib/nrf52840/gcc/libopenthread-nrf52840-sdk.a \
-  $(SDK_ROOT)/external/openthread/nrf_security/lib/libmbedcrypto_glue.a \
-  $(SDK_ROOT)/external/openthread/nrf_security/lib/libmbedcrypto_glue_cc310.a \
-  $(SDK_ROOT)/external/openthread/nrf_security/lib/libmbedcrypto_glue_vanilla.a \
+  $(SDK_ROOT)/external/nrf_security/lib/libmbedcrypto_cc310_backend.a \
+  $(SDK_ROOT)/external/nrf_security/lib/libmbedcrypto_glue.a \
+  $(SDK_ROOT)/external/nrf_security/lib/libmbedcrypto_glue_cc310.a \
+  $(SDK_ROOT)/external/nrf_security/lib/libmbedcrypto_glue_vanilla.a \
+  $(SDK_ROOT)/external/nrf_security/lib/libmbedtls_base_vanilla.a \
   $(SDK_ROOT)/external/openthread/lib/nrf52840/gcc/libnordicsemi-nrf52840-radio-driver.a \
-  $(SDK_ROOT)/external/openthread/nrf_security/lib/libmbedcrypto_cc310_backend.a \
-  $(SDK_ROOT)/external/openthread/nrf_security/lib/libmbedcrypto_vanilla_backend.a \
+  $(SDK_ROOT)/external/nrf_security/lib/libmbedcrypto_cc310_backend.a \
+  $(SDK_ROOT)/external/nrf_security/lib/libmbedcrypto_vanilla_backend.a \
+  $(SDK_ROOT)/external/openthread/lib/nrf52840/gcc/libopenthread-nrf52840-transport.a \
   $(SDK_ROOT)/external/openthread/lib/nrf52840/gcc/libopenthread-platform-utils.a \
-  $(SDK_ROOT)/external/openthread/nrf_security/lib/libmbedtls_base_vanilla.a \
-  $(SDK_ROOT)/external/openthread/nrf_security/lib/libmbedtls_tls_vanilla.a \
-  $(SDK_ROOT)/external/openthread/nrf_security/lib/libmbedtls_x509_vanilla.a \
-  $(SDK_ROOT)/external/openthread/nrf_security/lib/libnrf_cc310_platform_0.9.1.a \
+  $(SDK_ROOT)/external/nrf_security/lib/libmbedtls_base_vanilla.a \
+  $(SDK_ROOT)/external/nrf_security/lib/libmbedtls_tls_vanilla.a \
+  $(SDK_ROOT)/external/nrf_security/lib/libmbedtls_x509_vanilla.a \
+  $(SDK_ROOT)/external/nrf_security/lib/libnrf_cc310_platform_0.9.2.a \
   $(SDK_ROOT)/external/openthread/lib/nrf52840/gcc/libopenthread-mtd.a \
 
 # Optimization flags

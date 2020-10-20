@@ -56,6 +56,7 @@ SRC_FILES += \
   $(SDK_ROOT)/modules/nrfx/soc/nrfx_atomic.c \
   $(SDK_ROOT)/modules/nrfx/drivers/src/nrfx_clock.c \
   $(SDK_ROOT)/modules/nrfx/drivers/src/nrfx_gpiote.c \
+  $(SDK_ROOT)/modules/nrfx/drivers/src/nrfx_nvmc.c \
   $(SDK_ROOT)/modules/nrfx/drivers/src/nrfx_rng.c \
   $(SDK_ROOT)/modules/nrfx/drivers/src/nrfx_saadc.c \
   $(SDK_ROOT)/modules/nrfx/drivers/src/nrfx_twi.c \
@@ -97,12 +98,13 @@ INC_FOLDERS += \
   $(SDK_ROOT)/components/libraries/queue \
   $(SDK_ROOT)/components/libraries/pwr_mgmt \
   $(SDK_ROOT)/external/nRF-IEEE-802.15.4-radio-driver/src/fem/three_pin_gpio \
-  $(SDK_ROOT)/external/openthread/nrf_security/include \
+  $(SDK_ROOT)/external/nrf_security/include \
   $(SDK_ROOT)/components/boards \
   $(SDK_ROOT)/components/libraries/strerror \
   $(SDK_ROOT)/components/toolchain/cmsis/include \
   $(SDK_ROOT)/components/libraries/timer \
   $(SDK_ROOT)/components/libraries/util \
+  $(SDK_ROOT)/external/nrf_security/config \
   $(SDK_ROOT)/external/openthread/include \
   ../config \
   $(SDK_ROOT)/components/libraries/balloc \
@@ -112,7 +114,7 @@ INC_FOLDERS += \
   $(SDK_ROOT)/components/libraries/bsp \
   $(SDK_ROOT)/components/libraries/log \
   $(SDK_ROOT)/components/libraries/button \
-  $(SDK_ROOT)/external/openthread/nrf_security/mbedtls_plat_config \
+  $(SDK_ROOT)/external/nrf_security/mbedtls_plat_config \
   $(SDK_ROOT)/modules/nrfx \
   $(SDK_ROOT)/components/libraries/experimental_section_vars \
   $(SDK_ROOT)/integration/nrfx/legacy \
@@ -124,28 +126,28 @@ INC_FOLDERS += \
   $(SDK_ROOT)/components/drivers_nrf/nrf_soc_nosd \
   $(SDK_ROOT)/components/libraries/atomic \
   $(SDK_ROOT)/components/libraries/sortlist \
-  $(SDK_ROOT)/external/openthread/mbedtls/mbedtls/platform \
   $(SDK_ROOT)/components/libraries/memobj \
   $(SDK_ROOT)/components/thread/mqtt_sn/mqtt_sn_client \
-  $(SDK_ROOT)/external/openthread/project/nrf52833 \
   $(SDK_ROOT)/integration/nrfx \
+  $(SDK_ROOT)/external/openthread/project/nrf52833 \
   $(SDK_ROOT)/modules/nrfx/drivers/include \
   $(SDK_ROOT)/components/thread/utils \
-  $(SDK_ROOT)/external/openthread/mbedtls \
   $(SDK_ROOT)/modules/nrfx/hal \
   $(SDK_ROOT)/external/fprintf \
   $(SDK_ROOT)/components/libraries/log/src \
 
 # Libraries common to all targets
 LIB_FILES += \
-  $(SDK_ROOT)/external/openthread/lib/nrf52833/gcc/libopenthread-cli-mtd.a \
-  $(SDK_ROOT)/external/openthread/lib/nrf52833/gcc/libopenthread-mtd.a \
+  $(SDK_ROOT)/external/openthread/lib/nrf52833/gcc/libopenthread-cli-ftd.a \
+  $(SDK_ROOT)/external/openthread/lib/nrf52833/gcc/libopenthread-ftd.a \
+  $(SDK_ROOT)/external/openthread/lib/nrf52833/gcc/libopenthread-nrf52833-transport.a \
   $(SDK_ROOT)/external/openthread/lib/nrf52833/gcc/libopenthread-platform-utils.a \
   $(SDK_ROOT)/external/openthread/lib/nrf52833/gcc/libmbedcrypto.a \
   $(SDK_ROOT)/external/openthread/lib/nrf52833/gcc/libopenthread-nrf52833-sdk.a \
   $(SDK_ROOT)/external/openthread/lib/nrf52833/gcc/libnordicsemi-nrf52833-radio-driver.a \
+  $(SDK_ROOT)/external/openthread/lib/nrf52833/gcc/libopenthread-nrf52833-transport.a \
   $(SDK_ROOT)/external/openthread/lib/nrf52833/gcc/libopenthread-platform-utils.a \
-  $(SDK_ROOT)/external/openthread/lib/nrf52833/gcc/libopenthread-mtd.a \
+  $(SDK_ROOT)/external/openthread/lib/nrf52833/gcc/libopenthread-ftd.a \
 
 # Optimization flags
 OPT = -O3 -g3
@@ -160,7 +162,7 @@ CFLAGS += -DBOARD_PCA10100
 CFLAGS += -DCONFIG_GPIO_AS_PINRESET
 CFLAGS += -DENABLE_FEM
 CFLAGS += -DFLOAT_ABI_HARD
-CFLAGS += -DMBEDTLS_CONFIG_FILE=\"mbedtls-config.h\"
+CFLAGS += -DMBEDTLS_CONFIG_FILE=\"nrf-config.h\"
 CFLAGS += -DMBEDTLS_USER_CONFIG_FILE=\"nrf52833-mbedtls-config.h\"
 CFLAGS += -DNRF52833_XXAA
 CFLAGS += -DOPENTHREAD_CONFIG_ENABLE_BUILTIN_MBEDTLS=1
