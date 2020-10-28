@@ -35,3 +35,14 @@ Commands can be sent to each cell moditor using the topic "nrfcellmon/device ID/
     Resets the device by calling NVIC_SystemReset
 
     example "nrfcellmon/E19928773B8398AF/reset"
+
+# Note
+
+The project files in this repo use relative paths to the nRF5 SDK. It should build out of the box when cloned in the `examples/thread` folder of the nRF5 SDK for Thread and Zigbee.
+
+nRF5 SDK for Thread and Zigbee v4.1 and lower does not support using VDDH as input to the SAADC and you need to comment out these lines in the function `nrfx_saadc_channel_init` in the file `modules/nrfx/drivers/src/nrfx_saadc.c` to avoid getting an assert:
+```
+NRFX_ASSERT((p_config->pin_p <= NRF_SAADC_INPUT_VDD) &&
+                (p_config->pin_p > NRF_SAADC_INPUT_DISABLED));
+NRFX_ASSERT(p_config->pin_n <= NRF_SAADC_INPUT_VDD);
+```
