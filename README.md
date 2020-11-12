@@ -11,10 +11,12 @@ Three values are sampled and published on MQTT:
 
 # MQTT-SN
 
-To identify each battery cell, the device ID is included in the published data. For now the topic to subscribe is "nrfcellmon/celldata". One JSON topic is published containing the device ID ("id"), the battery/cell voltage in mV ("mv"), the battery/cell temperature in degrees Celsius ("tb") and the self/device temperature in degrees Celsius ("ts"). If the device ID is "E19928773B8398AF", the battery voltage 3779mV, the battery temperature 22&deg;C and the internal temperature 25&deg;C, the topic published data looks like this:
+To identify each battery cell, the device ID is included in the topic. For now the topic to subscribe is "nrfcellmon/{ID}/data". One topic is published containing the device ID ("id"). The battery/cell voltage in mV ("mv"), the battery/cell temperature in degrees Celsius ("tb") and the self/device temperature in degrees Celsius ("ts") in the JSON encoded payload. If the device ID is "E19928773B8398AF", the battery voltage 3779mV, the battery temperature 22&deg;C and the internal temperature 25&deg;C, the published topic looks like this:
 
+nrfcellmon/E19928773B8398AF/data
+
+and the JSON encoded data:
 {
-  "id" : "E19928773B8398AF",
   "mv" : 3779,
   "tb" : 22,
   "ts" : 25
