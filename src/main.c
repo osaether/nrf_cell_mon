@@ -78,7 +78,7 @@ const char                      *m_pname = "nrfcellmon";
 
 static mqttsn_topic_t m_pub_topics[] =
 {
-    {(uint8_t *)"celldata", 0}
+    {(uint8_t *)"data", 0}
 };
 
 #define PUB_TOPIC_DATA  0
@@ -228,7 +228,7 @@ static void mqtt_register(void * p_event_data, uint16_t event_size)
     
     for(i=0;i<sizeof(m_pub_topics)/sizeof(mqttsn_topic_t);i++)
     {
-        snprintf(m_topic_name, TOPIC_LEN, "%s/%s", m_pname, m_pub_topics[i].p_topic_name);
+        snprintf(m_topic_name, TOPIC_LEN, "%s/%s/%s", m_pname, m_client_id, m_pub_topics[i].p_topic_name);
         m_mqtt_registered = false;
         err_code = mqttsn_client_topic_register(&m_client, (uint8_t *)m_topic_name, strlen(m_topic_name), &m_msg_id);
         if (err_code != NRF_SUCCESS)
@@ -382,9 +382,9 @@ static void publish(void * p_event_data, uint16_t event_size)
     char buf[64];
 
 #if defined(EXTERNAL_TEMP_SENSOR)
-    snprintf(buf, 64, "{\"id\":\"%s\",\"mv\":%lu,\"tb\":%d,\"ts\":%d}", m_client_id, m_mvoltage, m_battery_temp, m_internal_temp);
+    snprintf(buf, 64, "{\"mv\":%lu,\"tb\":%d,\"ts\":%d}", m_mvoltage, m_battery_temp, m_internal_temp);
 #else
-    snprintf(buf, 64, "{\"id\":\"%s\",\"mv\":%lu,\"ts\":%d}", m_client_id, m_mvoltage, m_internal_temp);
+    snprintf(buf, 64, "{\"mv\":%lu,\"ts\":%d}", m_mvoltage, m_internal_temp);
 #endif
     err_code = mqttsn_client_publish(&m_client, m_pub_topics[PUB_TOPIC_DATA].topic_id, buf, strlen(buf), &m_msg_id);
     if (err_code != NRF_SUCCESS)
