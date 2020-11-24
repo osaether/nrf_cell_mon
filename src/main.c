@@ -133,6 +133,9 @@ static void wake_up(void)
 
 static void mqttsn_connect(void * p_event_data, uint16_t event_size)
 {
+    mqttsn_client_state_t state = mqttsn_client_state_get(&m_client);
+    if (state != MQTTSN_CLIENT_DISCONNECTED)
+        return;
     uint32_t err_code = mqttsn_client_connect(&m_client, &m_gateway_addr, m_gateway_id, &m_connect_opt);
     if (err_code != NRF_SUCCESS)
     {
@@ -145,7 +148,7 @@ static void mqttsn_connect(void * p_event_data, uint16_t event_size)
 static void gateway_info_callback(mqttsn_event_t * p_event)
 {        
     m_gateway_addr = *(p_event->event_data.connected.p_gateway_addr);
-    m_gateway_id = p_event->event_data.connected.gateway_id;    
+    m_gateway_id = p_event->event_data.connected.gateway_id;
     app_sched_event_put(NULL, 0, mqttsn_connect);
 }
 
@@ -332,6 +335,16 @@ void mqttsn_evt_handler(mqttsn_client_t * p_client, mqttsn_event_t * p_event)
     }
 }
 
+static void mqttsn_search_gateway(void * p_event_data, uint16_t event_size)
+{
+    uint32_t err_code = mqttsn_client_search_gateway(&m_client, SEARCH_GATEWAY_TIMEOUT);
+    if (err_code != NRF_SUCCESS)
+    {
+        NRF_LOG_ERROR("SEARCH GATEWAY message could not be sent. Error: 0x%x\r\n", err_code);
+        APP_ERROR_CHECK(err_code);
+    }
+}
+
 static void mqttsn_init(void * p_event_data, uint16_t event_size)
 {
     uint32_t err_code = mqttsn_client_init(&m_client,
@@ -348,6 +361,8 @@ static void mqttsn_init(void * p_event_data, uint16_t event_size)
 
     memcpy(m_connect_opt.p_client_id, (unsigned char *)m_client_id, m_connect_opt.client_id_len);
     printf("Client-ID:%s\r\n", m_client_id);
+    app_sched_event_put(NULL, 0, mqttsn_search_gateway);
+
 }
 
 static void state_changed_callback(uint32_t flags, void * p_context)
@@ -360,13 +375,10 @@ static void state_changed_callback(uint32_t flags, void * p_context)
         {
             case OT_DEVICE_ROLE_CHILD:
             case OT_DEVICE_ROLE_ROUTER:
-            case OT_DEVICE_ROLE_LEADER:   
-                err_code = mqttsn_client_search_gateway(&m_client, SEARCH_GATEWAY_TIMEOUT);
-                if (err_code != NRF_SUCCESS)
-                {
-                    NRF_LOG_ERROR("SEARCH GATEWAY message could not be sent. Error: 0x%x\r\n", err_code);
-                    APP_ERROR_CHECK(err_code);
-                }
+            case OT_DEVICE_ROLE_LEADER:
+                app_sched_event_put(NULL, 0, mqttsn_init);
+                break;
+
              default:
                 break;
         }
@@ -412,7 +424,7 @@ static void bsp_event_handler(bsp_event_t event)
     switch (event)
     {
         case BSP_EVENT_KEY_0:
-            NVIC_SystemReset();
+            otInstanceFactoryReset(thread_ot_instance_get());
             break;
 
         default:
@@ -564,7 +576,6 @@ int main(int argc, char *argv[])
     wdt_init();
     thread_instance_init();
     thread_bsp_init();
-    mqttsn_init(NULL, 0);
 
     while(true)
     {
